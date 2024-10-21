@@ -567,8 +567,12 @@ function wx_find_hb_pop_close_btn (timeout) {
 
 // 调用
 main();
+// 单独调试
 // threads.start(function () {
-//   wx_start();
+//   // 钉钉抢红包
+//   dd_start();
+//   // 微信抢红包
+//   // wx_start();
 // })
 
 
