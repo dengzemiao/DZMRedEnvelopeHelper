@@ -15,7 +15,7 @@
 // }
 
 // 日志
-var isLog = true;
+var isLog = false;
 // App名称
 var appName = '【水哥哥】红包助手';
 var appNameKey = 'hb_helper';
