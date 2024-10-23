@@ -18,7 +18,7 @@
 // 日志
 var isLog = true;
 // App名称
-var appName = '【水哥哥】红包助手';
+var appName = '红包助手';
 var appNameKey = 'hb_helper';
 // 本地存储
 var storage = storages.create(appNameKey);
@@ -43,27 +43,28 @@ function main() {
       <vertical>、
         <ScrollView>
           <vertical padding="16">
+            <text text="【水哥哥的小帮手】" textSize="20sp" marginBottom="20" textColor="black" gravity="center" />
             <text textSize="16sp" textColor="black" text="辅助平台（切换需重启服务才会生效）"/>
-            <radiogroup marginTop="10" marginBottom="20" id="radiogroup">
+            <radiogroup marginTop="10" id="radiogroup">
               <radio id="radio1" text="钉钉"/>
               <radio id="radio2" text="微信"/>
             </radiogroup>
-            <text textSize="16sp" textColor="black" text="查找红包弹层超时时间（毫秒）"/>
+            <text textSize="16sp" textColor="black" marginTop="10" text="查找红包弹层超时时间（毫秒）"/>
             <input hint="请输入" inputType="number" id="timeoutInterval"/>
-            <text textSize="16sp" textColor="black" text="查找红包详情页返回按钮超时时间（毫秒）"/>
+            <text textSize="16sp" textColor="black" marginTop="10" text="查找红包详情页返回按钮超时时间（毫秒）"/>
             <input hint="请输入" inputType="number" id="backInterval"/>
             <button marginTop="20" id="submit" text="启动服务"/>
             <button marginTop="20" id="console" text="查看日志"/>
             {/* <button marginTop="20" id="consoleclear" text="清空日志"/> */}
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：1000毫秒 = 1秒。"/>
-            <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="步骤：启动服务后，自行打开【钉钉或微信】，进入需要抢红包的群聊天室内即可。"/>
+            <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="步骤：启动服务后，自行打开【钉钉或微信】，进入需要抢红包的群聊天室内即可，抢红包期间不要打开日志面板，以免挡住脚本识别，日志主要用于排查错误。"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：所有的专属红包、个人1v1聊天室红包都不会抢，因为没必要抢，反正是你的，还减少计算量！"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：钉钉只抢群聊内普通拼手气红包、定时拼手气红包，会抢自己发的这两类红包。"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：微信只抢群聊内普通红包、拼手气红包，不会抢自己发的这两类红包。"/>
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：本服务需要悬浮窗权限、无障碍服务启动，推荐设置电池不优化白名单保活。根据要求，依次打开下面权限，才能正常使用，点击没跳转则多次点击尝试。"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint1" text="【必选】1、启用无障碍服务。（点击）"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint2" text="【必选】2、打开悬浮窗权限。（点击）"/>
-            <text textSize="16sp" marginTop="20" textColor="#0000FF" id="hint3" text="【建议】3、打开电池优化白名单。（点击）"/>
+            <text textSize="16sp" marginTop="20" textColor="#0000FF" id="hint3" paddingBottom="100" text="【建议】3、打开电池优化白名单。（点击）"/>
           </vertical>
         </ScrollView>
       </vertical>
@@ -159,7 +160,7 @@ function createWindow () {
   // 设置背景
   // window.status.setBackground(createDrawable("#4CAF50"));
   // 延迟确保获得到按钮尺寸
-  sleep(100);
+  sleep(200);
   // 初始化悬浮窗位置到右上角（单位：dp）
   // 获取屏幕宽度和高度
   var screenWidth = device.width;
