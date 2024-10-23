@@ -1,9 +1,10 @@
-// 红包助手 2024-10-21 11:00:00
+// 项目信息：红包助手 2024-10-21 11:00:00
+// 脚本版本：autojs pro 9.3.11
 "ui";
-
 // 权限处理
 // 检查无障碍服务是否已经启用，如果没有启用则跳转到无障碍服务启用界面，并等待无障碍服务启动；当无障碍服务启动后脚本会继续运行。
 // auto.waitFor();
+// auto.setMode('fast');
 // 检查悬浮窗权限
 // if (!floatyCheckPermission()) {
 //   // 提示
@@ -15,7 +16,7 @@
 // }
 
 // 日志
-var isLog = false;
+var isLog = true;
 // App名称
 var appName = '【水哥哥】红包助手';
 var appNameKey = 'hb_helper';
@@ -52,6 +53,8 @@ function main() {
             <text textSize="16sp" textColor="black" text="查找红包详情页返回按钮超时时间（毫秒）"/>
             <input hint="请输入" inputType="number" id="backInterval"/>
             <button marginTop="20" id="submit" text="启动服务"/>
+            <button marginTop="20" id="console" text="查看日志"/>
+            {/* <button marginTop="20" id="consoleclear" text="清空日志"/> */}
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：1000毫秒 = 1秒。"/>
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="步骤：启动服务后，自行打开【钉钉或微信】，进入需要抢红包的群聊天室内即可。"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：所有的专属红包、个人1v1聊天室红包都不会抢，因为没必要抢，反正是你的，还减少计算量！"/>
@@ -85,8 +88,33 @@ function main() {
   ui.hint3.on("click", function() {
     batteryOptimizationPage();
   });
+  // 查看日志
+  if (ui.console) {
+    ui.console.on("click", function() {
+      threads.start(function () {
+        // 检查悬浮窗权限
+        if (!checkFloatyPermission()) { return }
+        // 打开与配置日志
+        isLog = true
+        console.hide();
+        sleep(100);
+        console.show();
+        console.setTitle("日志");
+        console.setPosition(240, 0);
+      })
+    });
+  }
+  // 清空日志
+  if (ui.consoleclear) {
+    ui.consoleclear.on("click", function() {
+      threads.start(function () {
+        console.clear();
+      })
+    });
+  }
   // 点击启动
   ui.submit.on("click", function() {
+    // 根据状态进行操作
     if (isRun) {
       // 停止服务
       stop();
@@ -188,33 +216,68 @@ function createWindow () {
 
 // 启动服务
 function run() {
+  // 启动
   if (!isRun) {
     // 子线程处理
     thread = threads.start(function () {
-      if (isLog) { console.log('启动服务'); }
-      // 前台保活
-      KeepAliveService.start(appNameKey, appName);
-      // 创建悬浮窗
-      floaty.closeAll();
-      createWindow();
-      // 更新文案，由于不能在子线程操作UI，所以要抛到UI线程执行
-      ui.post(() => {
-        ui.submit.setText("停止服务");
-      });
-      // 设置启动状态
-      isRun = true;
-      // 提示用户
-      toast("服务已启动");
-      // 根据平台类型执行辅助
-      if (platform == ui.radio1.id) {
-        // 开始钉钉抢红包
-        dd_start();
-      } else if (platform == ui.radio2.id) {
-        // 开始微信抢红包
-        wx_start();
-      } else {
-        // 都不支持，则停止服务
-        stop();
+      try {
+        // 检查无障碍服务权限
+        if (!checkAutoPermission()) { return }
+        // 检查悬浮窗权限
+        if (!checkFloatyPermission()) { return }
+        // 日志
+        if (isLog) { console.info('>> 服务已启动'); }
+        // 创建悬浮窗
+        floaty.closeAll();
+        createWindow();
+        // 前台保活
+        KeepAliveService.start(appNameKey, appName);
+        // 切换启动状态
+        isRun = true;
+        // 更新文案，由于不能在子线程操作UI，所以要抛到UI线程执行
+        ui.post(() => {
+          ui.submit.setText("停止服务");
+        });
+        // 提示用户
+        toast("服务已启动");
+        // 根据平台类型执行辅助
+        if (platform == ui.radio1.id) {
+          // 开始钉钉抢红包
+          dd_start();
+        } else if (platform == ui.radio2.id) {
+          // 开始微信抢红包
+          wx_start();
+        } else {
+          // 都不支持，则停止服务
+          stop();
+        }
+      } catch (error) {
+        // 错误信息
+        var message = (error && error.message) || '未知错误';
+
+        // 方式一：
+        // com.stardust.autojs.runtime.exception.ScriptInterruptedException：这个错误是子线程被中断准备退出报的错，不用管
+        var ScriptInterruptedException = 'com.stardust.autojs.runtime.exception.ScriptInterruptedException';
+        // 如果是白名单错误则不做处理
+        if (message.includes(ScriptInterruptedException)) {
+          // 不错处理
+          if (isLog) { console.warn('>> 白名单错误：' + message); }
+        } else {
+          // 需要处理
+          if (isLog) { console.error('>> 错误信息：' + message); }
+          // 提示
+          // toast(error);
+          // 停止服务
+          stop();
+        }
+
+        // 方式二：
+        // // 日志
+        // if (isLog) { console.error('>> 错误信息：' + message); }
+        // // 提示
+        // toast(error);
+        // // 停止服务
+        // stop();
       }
     });
   }
@@ -222,22 +285,25 @@ function run() {
 
 // 停止服务
 function stop() {
-  if (isRun) {
-    if (isLog) { console.log('停止服务'); }
-    // 停止前台保活
-    KeepAliveService.stop();
+  // 日志
+  if (isLog) { console.info('>> 服务已停止'); }
+  // 停止前台保活
+  KeepAliveService.stop();
+  // 移除悬浮窗
+  floaty.closeAll();
+  // 设置启动状态
+  isRun = false;
+  // 更新文案，由于不能在子线程操作UI，所以要抛到UI线程执行
+  ui.post(() => {
     // 停止子线程
-    thread && thread.interrupt();
-    thread = null;
-    // 移除悬浮窗
-    floaty.closeAll();
-    // 设置启动状态
-    isRun = false;
-    // 更新文案
+    if (!!thread) {
+      thread.interrupt();
+      // thread = null;
+    }
     ui.submit.setText("启动服务");
-    // 提示用户
-    toast('服务已停止');
-  }
+  });
+  // 提示用户
+  toast('服务已停止');
 }
 
 // 创建背景
@@ -255,6 +321,46 @@ function clickDesc(value) {
   const el = desc(value).findOne();
   // 点击
   return click(el.bounds().centerX(), el.bounds().centerY());
+}
+
+// 检查无障碍服务权限，没有则获取
+function checkAutoPermission () {
+  // 无障碍服务权限
+  var isAuto = !!auto.service;
+  // 处理
+  if (isAuto) {
+    // 日志
+    if (isLog) { console.info('>> 无障碍权限：已授权'); }
+  } else {
+    // 日志
+    if (isLog) { console.error('>> 无障碍权限：未授权，请授权后再启动'); }
+    // 提示
+    toast('请授权后再启动');
+    // 开始授权
+    auto("fast");
+  }
+  // 返回
+  return isAuto
+}
+
+// 检查悬浮窗权限，没有则获取
+function checkFloatyPermission () {
+  // 悬浮窗权限
+  var isFloaty = floaty.checkPermission()
+  // 处理
+  if (isFloaty) {
+    // 日志
+    if (isLog) { console.info('>> 悬浮窗权限：已授权'); }
+  } else {
+    // 日志
+    if (isLog) { console.error('>> 悬浮窗权限：未授权，请授权后再启动'); }
+    // 提示
+    toast('请授权后再启动');
+    // 开始授权
+    floaty.requestPermission();
+  }
+  // 返回
+  return isFloaty
 }
 
 // 请求悬浮窗权限
@@ -327,8 +433,8 @@ function dd_start() {
     // 查找定时红包
     hb = dd_find_timed_hb(1);
   }
-  // 输出日志
-  if (isLog) { console.log('红包: ' + (!!hb ? '有' : '无')); }
+  // 日志
+  // if (isLog) { console.info('>> 红包: ' + (!!hb ? '有' : '无')); }
   // 如果有红包
   if (hb) {
     // 点击拼手气红包
@@ -445,7 +551,7 @@ function wx_start() {
   // 页面上别人发的且没有被领取的红包
   var hb = wx_find_hb();
   // 输出日志
-  if (isLog) { console.log('红包: ' + (!!hb ? '有' : '无')); }
+  // if (isLog) { console.info('>> 红包: ' + (!!hb ? '有' : '无')); }
   // 如果有红包
   if (hb) {
     // 点击拼手气红包
