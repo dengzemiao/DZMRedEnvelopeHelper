@@ -8,6 +8,6 @@
 
 - 没有安卓机的，可以使用 [雷电 4.0 模拟器](https://github.com/dengzemiao/DZMAutojsTools/blob/main/ldplayerinst4_4.0.83.exe) 进行测试。
 
-- [钉钉测试视频](./hb_dd.mp4)、[微信测试视频](./hb_wx.mp4)，自行下载观看测试效果。
+- ![钉钉测试视频](./hb_dd.mp4)、![微信测试视频](./hb_wx.mp4)，自行下载观看测试效果。
 
-- [运行效果 1](demo1.png)、[运行效果 2](demo2.png)，自行下载观看测试效果。
+- ![运行效果 1](demo1.png)、![运行效果 2](demo2.png)，自行下载观看测试效果。
