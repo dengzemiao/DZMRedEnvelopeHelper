@@ -6,7 +6,7 @@
 
 - `注意`：`apk` 安装的方式，钉钉版本使用没问题，但是微信会存在找到按键缺点击失效的情况。遇到这种情况可以按下面的方式使用，效果一样。
 
-- 可以直接使用安装包，或使用 [autojs4.x - apk](https://github.com/dengzemiao/DZMAutojsTools) 安装导入运行。
+- 可以直接使用安装包，或使用 [autojs4.x - apk](https://github.com/dengzemiao/DZMAutojsTools) 安装导入 `main.js` 文件即可， 然后运行使用。
 
 - 没有安卓机的，可以使用 [雷电 4.0 模拟器](https://github.com/dengzemiao/DZMAutojsTools/blob/main/ldplayerinst4_4.0.83.exe) 进行测试。
 
