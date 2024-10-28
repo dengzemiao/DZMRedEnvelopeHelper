@@ -290,17 +290,15 @@ function stop() {
   if (isLog) { console.info('>> 服务已停止'); }
   // 停止前台保活
   KeepAliveService.stop();
+  // 停止子线程
+  thread && thread.interrupt();
+  thread = null;
   // 移除悬浮窗
   floaty.closeAll();
   // 设置启动状态
   isRun = false;
   // 更新文案，由于不能在子线程操作UI，所以要抛到UI线程执行
   ui.post(() => {
-    // 停止子线程
-    if (!!thread) {
-      thread.interrupt();
-      // thread = null;
-    }
     ui.submit.setText("启动服务");
   });
   // 提示用户
