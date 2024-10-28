@@ -23,7 +23,7 @@ var appNameKey = 'hb_helper';
 // 本地存储
 var storage = storages.create(appNameKey);
 // 查找红包弹层超时时间
-var timeoutInterval = parseInt(storage.get('timeoutInterval') || 300);
+var timeoutInterval = parseInt(storage.get('timeoutInterval') || 500);
 // 查找红包详情页返回按钮超时时间
 var backInterval = parseInt(storage.get('backInterval') || 500);
 // 服务是否启动了
@@ -486,18 +486,29 @@ function dd_start() {
     // 点击拼手气红包
     click(hb.bounds().centerX(), hb.bounds().centerY());
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(timeoutInterval, () => {
-      // 查找并点击返回按钮
-      dd_click_hb_detail_back(backInterval);
+    dd_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
+      // 找到按钮才需要继续
+      if (!!hb_btn) {
+        // 查找并点击返回按钮
+        dd_click_hb_detail_back(backInterval);
+      }
     });
     // 重新开始
     dd_start();
   } else {
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(1, () => {
-      // 查找并点击返回按钮
-      dd_click_hb_detail_back(1);
-      dd_click_exclusive_hb_detail_back(1);
+    dd_click_hb_pop_btn(100, (hb_btn) => {
+      // 没找到才需要继续
+      if (!hb_btn) {
+        // 查找并点击红包详情页返回按钮
+        dd_click_hb_detail_back(1, (detail_btn) => {
+          // 没找到才需要继续
+          if (!detail_btn) {
+            // 查找并点击【专享】红包详情页返回按钮
+            dd_click_exclusive_hb_detail_back(1);
+          }
+        });
+      }
     });
     // 重新开始
     dd_start();
@@ -603,20 +614,29 @@ function wx_start() {
     // 点击拼手气红包
     click(hb.bounds().centerX(), hb.bounds().centerY());
     // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(timeoutInterval, () => {
-      // 查找并点击返回按钮
-      wx_click_hb_detail_back(backInterval);
+    wx_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
+      // 找到按钮才需要继续
+      if (!!hb_btn) {
+        // 查找并点击返回按钮
+        wx_click_hb_detail_back(backInterval);
+      }
     });
     // 重新开始
     wx_start();
   } else {
     // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(1, () => {
-      // 查找并点击返回按钮
-      wx_click_hb_detail_back(1, () => {
-        // 查找并点击红包弹层关闭按钮
-        wx_click_hb_pop_close_btn(1);
-      });
+    wx_click_hb_pop_btn(1, (hb_btn) => {
+      // 没找到才需要继续
+      if (!hb_btn) {
+        // 查找并点击返回按钮
+        wx_click_hb_detail_back(1, (detail_btn) => {
+          // 没找到才需要继续
+          if (!detail_btn) {
+            // 查找并点击红包弹层关闭按钮
+            wx_click_hb_pop_close_btn(1);
+          }
+        });
+      }
     });
     // 重新开始
     wx_start();
