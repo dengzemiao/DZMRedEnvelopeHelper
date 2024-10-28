@@ -1,5 +1,5 @@
-// 项目信息：红包助手 2024-10-21 11:00:00
-// 脚本版本：autojs pro 9.3.11
+// 项目信息：红包助手 2024-10-28 14:00:00
+// 脚本版本：autojs 4.1.1
 "ui";
 // 权限处理
 // 检查无障碍服务是否已经启用，如果没有启用则跳转到无障碍服务启用界面，并等待无障碍服务启动；当无障碍服务启动后脚本会继续运行。
@@ -23,7 +23,7 @@ var appNameKey = 'hb_helper';
 // 本地存储
 var storage = storages.create(appNameKey);
 // 查找红包弹层超时时间
-var timeoutInterval = parseInt(storage.get('timeoutInterval') || 300);
+var timeoutInterval = parseInt(storage.get('timeoutInterval') || 500);
 // 查找红包详情页返回按钮超时时间
 var backInterval = parseInt(storage.get('backInterval') || 500);
 // 服务是否启动了
@@ -32,6 +32,8 @@ var isRun = false;
 var thread = null;
 // 辅助平台
 var platform = parseInt(storage.get('platform') || 0);
+// 版本
+// var is411 = is411();
 
 // ========================================= 《 公共 》
 
@@ -79,7 +81,7 @@ function main() {
   ui.radiogroup.check(platform);
   // 点击无障碍服务
   ui.hint1.on("click", function() {
-    accessibilityServicePage();
+    autoRequestPermission();
   })
   // 点击悬浮窗权限
   ui.hint2.on("click", function() {
@@ -262,10 +264,10 @@ function run() {
         // 如果是白名单错误则不做处理
         if (message.includes(ScriptInterruptedException)) {
           // 不错处理
-          if (isLog) { console.warn('>> 白名单错误：' + message); }
+          if (isLog) { console.warn('>> 启动白名单错误：' + message); }
         } else {
           // 需要处理
-          if (isLog) { console.error('>> 错误信息：' + message); }
+          if (isLog) { console.error('>> 启动错误信息：' + message); }
           // 提示
           // toast(error);
           // 停止服务
@@ -290,17 +292,15 @@ function stop() {
   if (isLog) { console.info('>> 服务已停止'); }
   // 停止前台保活
   KeepAliveService.stop();
+  // 停止子线程
+  thread && thread.interrupt();
+  thread = null;
   // 移除悬浮窗
   floaty.closeAll();
   // 设置启动状态
   isRun = false;
   // 更新文案，由于不能在子线程操作UI，所以要抛到UI线程执行
   ui.post(() => {
-    // 停止子线程
-    if (!!thread) {
-      thread.interrupt();
-      // thread = null;
-    }
     ui.submit.setText("启动服务");
   });
   // 提示用户
@@ -327,7 +327,7 @@ function clickDesc(value) {
 // 检查无障碍服务权限，没有则获取
 function checkAutoPermission () {
   // 无障碍服务权限
-  var isAuto = !!auto.service;
+  var isAuto = autoCheckPermission();
   // 处理
   if (isAuto) {
     // 日志
@@ -347,7 +347,10 @@ function checkAutoPermission () {
 // 检查悬浮窗权限，没有则获取
 function checkFloatyPermission () {
   // 悬浮窗权限
-  var isFloaty = floaty.checkPermission()
+  var isFloaty = false
+  // 悬浮窗权限
+  // isFloaty = floaty.checkPermission()
+  isFloaty = floatyCheckPermission()
   // 处理
   if (isFloaty) {
     // 日志
@@ -358,10 +361,28 @@ function checkFloatyPermission () {
     // 提示
     toast('请授权后再启动');
     // 开始授权
-    floaty.requestPermission();
+    // floaty.requestPermission();
+    floatyRequestPermission();
   }
   // 返回
   return isFloaty
+}
+
+// 检查 4.1.1 版本
+function is411() {
+  return app.autojs.versionName.includes('4.1.1')
+}
+
+// 检查悬浮窗权限
+function floatyCheckPermission () {
+  var AppOpsManager = android.app.AppOpsManager;
+  var ops = context.getSystemService(context.APP_OPS_SERVICE);
+  var mode = ops.checkOpNoThrow(
+    AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW,
+    android.os.Process.myUid(),
+    context.getPackageName()
+  );
+  return mode === AppOpsManager.MODE_ALLOWED;
 }
 
 // 请求悬浮窗权限
@@ -372,17 +393,41 @@ function floatyRequestPermission () {
   });
 }
 
+// 检查无障碍服务权限
+function autoCheckPermission () {
+  // 方式一：
+  return !!auto.service;
+
+  // 方式二：
+  // var isService = false;
+  // var context = activity;
+  // try {
+  //   var enabledServices = android.provider.Settings.Secure.getString(
+  //     context.getContentResolver(),
+  //     android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+  //   );
+  //   var myService = context.getPackageName() + "/com.stardust.autojs.core.accessibility.AccessibilityService";
+  //   isService = !!(enabledServices && enabledServices.includes(myService));
+  //   console.log(obj);
+    
+  // } catch (error) {
+  //   var message = (error && error.message) || '未知错误';
+  //   if (isLog) { console.error('>> 检测无障碍权限错误：' + message); }
+  // }
+  // return isService;
+}
+
+// 请求无障碍服务权限
+function autoRequestPermission() {
+  app.startActivity({
+    action: "android.settings.ACCESSIBILITY_SETTINGS"
+  });
+}
+
 // 电池优化页面
 function batteryOptimizationPage() {
   app.startActivity({
     action: "android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS"
-  });
-}
-
-// 无障碍服务页面
-function accessibilityServicePage() {
-  app.startActivity({
-    action: "android.settings.ACCESSIBILITY_SETTINGS"
   });
 }
 
@@ -441,18 +486,29 @@ function dd_start() {
     // 点击拼手气红包
     click(hb.bounds().centerX(), hb.bounds().centerY());
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(timeoutInterval, () => {
-      // 查找并点击返回按钮
-      dd_click_hb_detail_back(backInterval);
+    dd_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
+      // 找到按钮才需要继续
+      if (!!hb_btn) {
+        // 查找并点击返回按钮
+        dd_click_hb_detail_back(backInterval);
+      }
     });
     // 重新开始
     dd_start();
   } else {
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(1, () => {
-      // 查找并点击返回按钮
-      dd_click_hb_detail_back(1);
-      dd_click_exclusive_hb_detail_back(1);
+    dd_click_hb_pop_btn(100, (hb_btn) => {
+      // 没找到才需要继续
+      if (!hb_btn) {
+        // 查找并点击红包详情页返回按钮
+        dd_click_hb_detail_back(1, (detail_btn) => {
+          // 没找到才需要继续
+          if (!detail_btn) {
+            // 查找并点击【专享】红包详情页返回按钮
+            dd_click_exclusive_hb_detail_back(1);
+          }
+        });
+      }
     });
     // 重新开始
     dd_start();
@@ -558,20 +614,29 @@ function wx_start() {
     // 点击拼手气红包
     click(hb.bounds().centerX(), hb.bounds().centerY());
     // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(timeoutInterval, () => {
-      // 查找并点击返回按钮
-      wx_click_hb_detail_back(backInterval);
+    wx_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
+      // 找到按钮才需要继续
+      if (!!hb_btn) {
+        // 查找并点击返回按钮
+        wx_click_hb_detail_back(backInterval);
+      }
     });
     // 重新开始
     wx_start();
   } else {
     // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(1, () => {
-      // 查找并点击返回按钮
-      wx_click_hb_detail_back(1, () => {
-        // 查找并点击红包弹层关闭按钮
-        wx_click_hb_pop_close_btn(1);
-      });
+    wx_click_hb_pop_btn(1, (hb_btn) => {
+      // 没找到才需要继续
+      if (!hb_btn) {
+        // 查找并点击返回按钮
+        wx_click_hb_detail_back(1, (detail_btn) => {
+          // 没找到才需要继续
+          if (!detail_btn) {
+            // 查找并点击红包弹层关闭按钮
+            wx_click_hb_pop_close_btn(1);
+          }
+        });
+      }
     });
     // 重新开始
     wx_start();
