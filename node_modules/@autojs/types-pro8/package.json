@@ -1,0 +1,46 @@
+{
+  "_from": "@autojs/types-pro8",
+  "_id": "@autojs/types-pro8@8.8.0",
+  "_inBundle": false,
+  "_integrity": "sha512-qV5vUUrXI8C1SKGVbMiSA8Bmd/oe8Xpd2Ipz3RqAc0iNaalKOBddYzNMKR1Nn7hDmetrITcvOn3W+i515ydMqg==",
+  "_location": "/@autojs/types-pro8",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@autojs/types-pro8",
+    "name": "@autojs/types-pro8",
+    "escapedName": "@autojs%2ftypes-pro8",
+    "scope": "@autojs",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/@autojs/types-pro8/-/types-pro8-8.8.0.tgz",
+  "_shasum": "bb488691b4b6b11f9c218e5bb672741487ae7126",
+  "_spec": "@autojs/types-pro8",
+  "_where": "/Volumes/T7/Projects/autojs/autojspro-ext/assets/project-templates/v8-default",
+  "bugs": {
+    "url": "https://github.com/hyb1996/Auto.js/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "TypeScript definitions for Auto.js Pro V8 APIs",
+  "homepage": "https://g.pro.autojs.org/docs",
+  "license": "UNLICENSED",
+  "main": "",
+  "name": "@autojs/types-pro8",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyb1996/Auto.js.git"
+  },
+  "scripts": {},
+  "typeScriptVersion": "3.7",
+  "typings": "index.d.ts",
+  "version": "8.8.0"
+}
