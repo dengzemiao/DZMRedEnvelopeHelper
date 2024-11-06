@@ -60,7 +60,7 @@ function main() {
             {/* <button marginTop="20" id="consoleclear" text="清空日志"/> */}
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：1000毫秒 = 1秒。"/>
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="步骤：启动服务后，自行打开【钉钉或微信】，进入需要抢红包的群聊天室内即可，抢红包期间不要打开日志面板，以免挡住脚本识别，日志主要用于排查错误。"/>
-            <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：所有的专属红包、个人1v1聊天室红包都不会抢，因为没必要抢，反正是你的，还减少计算量！"/>
+            <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：所有的专属红包、个人1v1聊天室红包都不会抢，因为没必要抢，反正是你的，还减少计算量！失效红包自行删除或者划出页面展示，避免错误识别！"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：钉钉只抢群聊内普通拼手气红包、定时拼手气红包，会抢自己发的这两类红包。"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：微信只抢群聊内普通红包、拼手气红包，不会抢自己发的这两类红包。"/>
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：本服务需要悬浮窗权限、无障碍服务启动，推荐设置电池不优化白名单保活。根据要求，依次打开下面权限，才能正常使用，点击没跳转则多次点击尝试。"/>
