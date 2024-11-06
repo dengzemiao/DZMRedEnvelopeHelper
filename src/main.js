@@ -497,7 +497,7 @@ function dd_start() {
     dd_start();
   } else {
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(100, (hb_btn) => {
+    dd_click_hb_pop_btn(1, (hb_btn) => {
       // 没找到才需要继续
       if (!hb_btn) {
         // 查找并点击红包详情页返回按钮
