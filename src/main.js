@@ -23,7 +23,7 @@ var appNameKey = 'hb_helper';
 // 本地存储
 var storage = storages.create(appNameKey);
 // 查找红包弹层超时时间
-var timeoutInterval = parseInt(storage.get('timeoutInterval') || 300);
+var timeoutInterval = parseInt(storage.get('timeoutInterval') || 500);
 // 查找红包详情页返回按钮超时时间
 var backInterval = parseInt(storage.get('backInterval') || 500);
 // 服务是否启动了
@@ -58,7 +58,7 @@ function main() {
             {/* <button marginTop="20" id="consoleclear" text="清空日志"/> */}
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：1000毫秒 = 1秒。"/>
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="步骤：启动服务后，自行打开【钉钉或微信】，进入需要抢红包的群聊天室内即可，抢红包期间不要打开日志面板，以免挡住脚本识别，日志主要用于排查错误。"/>
-            <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：所有的专属红包、个人1v1聊天室红包都不会抢，因为没必要抢，反正是你的，还减少计算量！"/>
+            <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：所有的专属红包、个人1v1聊天室红包都不会抢，因为没必要抢，反正是你的，还减少计算量！失效红包自行删除或者划出页面展示，避免错误识别！"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：钉钉只抢群聊内普通拼手气红包、定时拼手气红包，会抢自己发的这两类红包。"/>
             <text textSize="16sp" marginTop="20" textColor="#FF4500" id="hint0" text="注意：微信只抢群聊内普通红包、拼手气红包，不会抢自己发的这两类红包。"/>
             <text textSize="16sp" marginTop="20" textColor="#28A745" id="hint0" text="提示：本服务需要悬浮窗权限、无障碍服务启动，推荐设置电池不优化白名单保活。根据要求，依次打开下面权限，才能正常使用，点击没跳转则多次点击尝试。"/>
@@ -439,18 +439,33 @@ function dd_start() {
     // 点击拼手气红包
     click(hb.bounds().centerX(), hb.bounds().centerY());
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(timeoutInterval, () => {
-      // 查找并点击返回按钮
-      dd_click_hb_detail_back(backInterval);
+    dd_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
+      // 找到按钮才需要继续
+      if (!!hb_btn) {
+        // 查找并点击返回按钮
+        dd_click_hb_detail_back(backInterval);
+      }
     });
     // 重新开始
     dd_start();
   } else {
+    // // 查找并点击红包弹层打开红包
+    // dd_click_hb_expire(1, (hb_expire) => {
+    //   // console.log(hb_expire);
+    // });
     // 查找并点击红包弹层打开红包
-    dd_click_hb_pop_btn(1, () => {
-      // 查找并点击返回按钮
-      dd_click_hb_detail_back(1);
-      dd_click_exclusive_hb_detail_back(1);
+    dd_click_hb_pop_btn(1, (hb_btn) => {
+      // 没找到才需要继续
+      if (!hb_btn) {
+        // 查找并点击红包详情页返回按钮
+        dd_click_hb_detail_back(1, (detail_btn) => {
+          // 没找到才需要继续
+          if (!detail_btn) {
+            // 查找并点击【专享】红包详情页返回按钮
+            dd_click_exclusive_hb_detail_back(1);
+          }
+        });
+      }
     });
     // 重新开始
     dd_start();
@@ -504,6 +519,41 @@ function dd_click_exclusive_hb_detail_back (timeout, result) {
   if (result) { result(back) }
 }
 
+// 点击失效红包的弹层，确保关闭
+function dd_click_hb_expire (timeout, result) {
+  // 是否失效
+  var isexpire = dd_find_hb_expire(timeout);
+  // 过期了
+  if (isexpire) {
+    // 找到红包弹层点击按钮
+    var hb_btn = dd_find_hb_pop_btn(timeout);
+    // 如果找到了
+    if (hb_btn) {
+      // 点击
+      click(hb_btn.bounds().centerX(), hb_btn.bounds().bottom + 20);
+    }
+  }
+  // 回调
+  if (result) { result(isexpire) }
+}
+
+// 找到的红包是否过期
+function dd_find_hb_expire (timeout, result) {
+  // 红包弹层文案元素
+  var hb_pop_text = dd_find_hb_pop_text(timeout);
+  // 内容
+  var text = ''
+  // 如果找到了
+  if (hb_pop_text) {
+    // 文案内容
+    text = hb_pop_text.text() || '';
+  }
+  // 回调
+  var isexpire = text.includes('已失效'); 
+  if (result) { result(isexpire) }
+  return isexpire
+}
+
 // 找到拼手气红包
 function dd_find_hb(timeout) {
   // 查找
@@ -524,6 +574,11 @@ function dd_find_timed_hb (timeout) {
 // 找到红包弹层打开红包按钮
 function dd_find_hb_pop_btn (timeout) {
   return id("iv_pick_bottom").findOne(timeout);
+}
+
+// 找到红包弹层文案内容
+function dd_find_hb_pop_text (timeout) {
+  return id("tv_bless_word").findOne(timeout);
 }
 
 // 进入了红包详情页
@@ -556,20 +611,29 @@ function wx_start() {
     // 点击拼手气红包
     click(hb.bounds().centerX(), hb.bounds().centerY());
     // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(timeoutInterval, () => {
-      // 查找并点击返回按钮
-      wx_click_hb_detail_back(backInterval);
+    wx_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
+      // 找到按钮才需要继续
+      if (!!hb_btn) {
+        // 查找并点击返回按钮
+        wx_click_hb_detail_back(backInterval);
+      }
     });
     // 重新开始
     wx_start();
   } else {
     // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(1, () => {
-      // 查找并点击返回按钮
-      wx_click_hb_detail_back(1, () => {
-        // 查找并点击红包弹层关闭按钮
-        wx_click_hb_pop_close_btn(1);
-      });
+    wx_click_hb_pop_btn(1, (hb_btn) => {
+      // 没找到才需要继续
+      if (!hb_btn) {
+        // 查找并点击返回按钮
+        wx_click_hb_detail_back(1, (detail_btn) => {
+          // 没找到才需要继续
+          if (!detail_btn) {
+            // 查找并点击红包弹层关闭按钮
+            wx_click_hb_pop_close_btn(1);
+          }
+        });
+      }
     });
     // 重新开始
     wx_start();
