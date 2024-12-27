@@ -10,7 +10,11 @@
 
 - 可以直接使用安装包，或使用 `autojspro 9.x` 及以上版本安装导入 `main.js` 文件即可， 然后运行使用。
 
-- 没有安卓机的，可以使用 [雷电 4.0 模拟器](https://github.com/dengzemiao/DZMAutojsTools/blob/main/ldplayerinst4_4.0.83.exe) 及以上版本，模拟器如果安装不上，也可以核对一下 `cpu` 类型是否支持。
+- 没有安卓机的，可以使用电脑模拟器，例如：[雷电 4.0 模拟器](https://github.com/dengzemiao/DZMAutojsTools/blob/main/ldplayerinst4_4.0.83.exe) 及以上版本、[Genymotion 模拟器](https://www.genymotion.com/)、[MuMu模拟器](https://mumu.163.com/)，模拟器如果安装不上包，可以核对一下模拟器 `cpu` 类型是什么。
+
+  附：[adb 查看安卓手机、模拟器、apk包所支持的 CPU 类型（armeabi、armeabi-v7a、arm64-v8a ...）](https://blog.csdn.net/zz00008888/article/details/133696691)
+
+  另外钉钉与微信 `App` 可以到第三方平台进行下载，或者 [Google Play 商店](https://blog.csdn.net/zz00008888/article/details/122740312) 下载 `apk`。
 
 - 分支信息：
 
