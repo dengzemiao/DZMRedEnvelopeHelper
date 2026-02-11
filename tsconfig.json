@@ -30,8 +30,8 @@
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": [
-      "../node_modules/@types",
-      "../node_modules/@autojs"
+      "./node_modules/@types",
+      "./node_modules/@autojs"
     ], /* Specify multiple folders that act like `./node_modules/@types`. */
     // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
@@ -95,7 +95,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "exclude": [
-    "../node_modules",
+    "node_modules",
     "out"
   ]
 }
