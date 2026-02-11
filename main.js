@@ -186,21 +186,31 @@ function main() {
 
               <vertical id="guideBox2" padding="14" marginTop="10">
                 <text textSize="12sp" textColor="#FFB74D" lineSpacingExtra="5"
-                  text="▸ 专属红包、1v1红包不会抢（没必要，反正是你的）。失效红包请自行删除或划出页面，避免误识别。"/>
+                  text="▸ 专属红包、1v1红包不会抢（没必要，反正是你的）。"/>
               </vertical>
 
-              <vertical id="guideBox3" padding="12 14" marginTop="10">
+              <vertical id="guideBox3" padding="14" marginTop="10">
+                <text textSize="12sp" textColor="#FF8A80" lineSpacingExtra="5"
+                  text="▸ 失效或被抢完的红包无法从页面区分状态，只能通过弹窗识别。建议删除该条消息或让新消息将其顶出页面，否则会持续触发打开操作（但不会重复抢，系统会拦截）。"/>
+              </vertical>
+
+              <vertical id="guideBox4" padding="14" marginTop="10">
+                <text textSize="12sp" textColor="#64B5F6" lineSpacingExtra="5"
+                  text="▸ 真机使用效果不佳时，推荐使用雷电模拟器等安卓模拟器，稳定性和识别率更高。"/>
+              </vertical>
+
+              <vertical id="guideBox5" padding="12 14" marginTop="10">
                 <text textSize="12sp" textColor="#8899AA" lineSpacingExtra="5"
                   text="钉钉 → 抢群聊拼手气红包 / 定时拼手气红包，会抢自己发出的红包。"/>
               </vertical>
-              <vertical id="guideBox4" padding="12 14" marginTop="10">
+              <vertical id="guideBox6" padding="12 14" marginTop="10">
                 <text textSize="12sp" textColor="#8899AA" lineSpacingExtra="5"
                   text="微信 → 抢群聊普通红包 / 拼手气红包，不会抢自己发出的红包。"/>
               </vertical>
             </vertical>
 
             {/* ========== 权限管理 ========== */}
-            <vertical id="card_permission" padding="20" marginTop="12" marginBottom="24">
+            <vertical id="card_permission" padding="20" marginTop="12">
               <horizontal gravity="center_vertical">
                 <text text="◆" textSize="14sp" id="dot5" />
                 <text text="  权限管理" textSize="17sp" textColor="#EAEAEA" textStyle="bold" />
@@ -245,6 +255,41 @@ function main() {
               </vertical>
             </vertical>
 
+            {/* ========== 项目信息 ========== */}
+            <vertical id="card_info" padding="20" marginTop="12" marginBottom="24">
+              <horizontal gravity="center_vertical">
+                <text text="◆" textSize="14sp" id="dot6" />
+                <text text="  项目信息" textSize="17sp" textColor="#EAEAEA" textStyle="bold" />
+              </horizontal>
+
+              <vertical id="linkBox1" padding="14" marginTop="14">
+                <horizontal gravity="center_vertical">
+                  <text text="🔗" textSize="16sp" />
+                  <vertical marginLeft="10">
+                    <text textSize="13sp" textColor="#8899AA" text="GitHub 源码"/>
+                    <text id="githubLink" textSize="12sp" textColor="#64B5F6" marginTop="2" 
+                      text="github.com/dengzemiao/DZMRedEnvelopeHelper"/>
+                  </vertical>
+                </horizontal>
+              </vertical>
+
+              <vertical id="linkBox2" padding="14" marginTop="10">
+                <horizontal gravity="center_vertical">
+                  <text text="📝" textSize="16sp" />
+                  <vertical marginLeft="10">
+                    <text textSize="13sp" textColor="#8899AA" text="博客主页"/>
+                    <text id="blogLink" textSize="12sp" textColor="#64B5F6" marginTop="2" 
+                      text="blog.csdn.net/zz00008888"/>
+                  </vertical>
+                </horizontal>
+              </vertical>
+
+              <vertical id="disclaimerBox" padding="14" marginTop="10">
+                <text textSize="11sp" textColor="#FFB74D" lineSpacingExtra="3"
+                  text="⚠️ 仅供学习交流使用，不可用于商业用途"/>
+              </vertical>
+            </vertical>
+
           </vertical>
         </ScrollView>
       </vertical>
@@ -262,12 +307,12 @@ function main() {
   ui.headerDivider.setBackground(createGradient("#B8860B", "#1A1A2E", 1));
 
   // 小圆点装饰 - 金色
-  [ui.dot1, ui.dot2, ui.dot3, ui.dot4, ui.dot5].forEach(function(dot) {
+  [ui.dot1, ui.dot2, ui.dot3, ui.dot4, ui.dot5, ui.dot6].forEach(function(dot) {
     dot.setTextColor(colors.parseColor(C_GOLD));
   });
 
   // 卡片背景 - 深色圆角
-  [ui.card_control, ui.card_platform, ui.card_params, ui.card_guide, ui.card_permission].forEach(function(card) {
+  [ui.card_control, ui.card_platform, ui.card_params, ui.card_guide, ui.card_permission, ui.card_info].forEach(function(card) {
     card.setBackground(createRoundStroke(C_CARD, C_DIVIDER, 16, 1));
   });
 
@@ -289,13 +334,20 @@ function main() {
   // 使用指南内部小卡片
   ui.guideBox1.setBackground(createRoundStroke("#0D2818", "#1B5E20", 10, 1));
   ui.guideBox2.setBackground(createRoundStroke("#2D1B00", "#E65100", 10, 1));
-  ui.guideBox3.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 8, 1));
-  ui.guideBox4.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 8, 1));
+  ui.guideBox3.setBackground(createRoundStroke("#2D0A0A", "#D32F2F", 10, 1));
+  ui.guideBox4.setBackground(createRoundStroke("#0A1929", "#1976D2", 10, 1));
+  ui.guideBox5.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 8, 1));
+  ui.guideBox6.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 8, 1));
 
   // 权限项样式
   ui.hint1.setBackground(createRoundRect(C_CARD_LIGHT, 10));
   ui.hint2.setBackground(createRoundRect(C_CARD_LIGHT, 10));
   ui.hint3.setBackground(createRoundRect(C_CARD_LIGHT, 10));
+
+  // 项目信息链接样式
+  ui.linkBox1.setBackground(createRoundRect(C_CARD_LIGHT, 10));
+  ui.linkBox2.setBackground(createRoundRect(C_CARD_LIGHT, 10));
+  ui.disclaimerBox.setBackground(createRoundStroke("#2D1B00", "#E65100", 10, 1));
 
   // ==================== 平台选择联动（替代 radiogroup） ====================
   // 因为自定义样式下原生 radiogroup 不好用，手动实现单选联动
@@ -357,6 +409,14 @@ function main() {
   // 点击电池优化
   ui.hint3.on("click", function() {
     batteryOptimizationPage();
+  });
+  // 点击 GitHub 链接
+  ui.linkBox1.on("click", function() {
+    app.openUrl("https://github.com/dengzemiao/DZMRedEnvelopeHelper");
+  });
+  // 点击博客链接
+  ui.linkBox2.on("click", function() {
+    app.openUrl("https://blog.csdn.net/zz00008888");
   });
   // 查看日志
   if (ui.console) {
