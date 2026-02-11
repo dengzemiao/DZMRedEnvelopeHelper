@@ -784,10 +784,6 @@ function dd_start() {
     // 重新开始
     dd_start();
   } else {
-    // // 查找并点击红包弹层打开红包
-    // dd_click_hb_expire(1, (hb_expire) => {
-    //   // console.log(hb_expire);
-    // });
     // 查找并点击红包弹层打开红包
     dd_click_hb_pop_btn(1, (hb_btn) => {
       // 没找到才需要继续
@@ -815,6 +811,11 @@ function dd_click_hb_pop_btn (timeout, result) {
   if (hb_btn) {
     // 点击
     click(hb_btn.bounds().centerX(), hb_btn.bounds().centerY());
+  } else {
+    // // 查找并点击红包弹层打开红包
+    dd_click_hb_expire(1, (hb_expire) => {
+      // console.log(hb_expire);
+    });
   }
   // 回调
   if (result) { result(hb_btn) }
@@ -856,23 +857,23 @@ function dd_click_exclusive_hb_detail_back (timeout, result) {
 
 // 点击失效红包的弹层，确保关闭
 function dd_click_hb_expire (timeout, result) {
-  // 是否失效
+  // 是否失效或抢完了
   var isexpire = dd_find_hb_expire(timeout);
-  // 过期了
+  // 失效或抢完了
   if (isexpire) {
-    // 找到红包弹层点击按钮
-    var hb_btn = dd_find_hb_pop_btn(timeout);
+    // 找到 rl_root_view 元素
+    var rl_root = dd_find_rl_root_view(timeout);
     // 如果找到了
-    if (hb_btn) {
-      // 点击
-      click(hb_btn.bounds().centerX(), hb_btn.bounds().bottom + 20);
+    if (rl_root) {
+      // 点击该元素左上角偏移 5 像素的位置
+      click(rl_root.bounds().left + 5, rl_root.bounds().top + 5);
     }
   }
   // 回调
   if (result) { result(isexpire) }
 }
 
-// 找到的红包是否过期
+// 找到的红包是否过期或抢完了
 function dd_find_hb_expire (timeout, result) {
   // 红包弹层文案元素
   var hb_pop_text = dd_find_hb_pop_text(timeout);
@@ -883,8 +884,8 @@ function dd_find_hb_expire (timeout, result) {
     // 文案内容
     text = hb_pop_text.text() || '';
   }
-  // 回调
-  var isexpire = text.includes('已失效'); 
+  // 回调（包含"已失效"或"抢完了"都算无法抢的红包）
+  var isexpire = text.includes('已失效') || text.includes('抢完了'); 
   if (result) { result(isexpire) }
   return isexpire
 }
@@ -893,8 +894,8 @@ function dd_find_hb_expire (timeout, result) {
 function dd_find_hb(timeout) {
   // 查找
   var hb = text('拼手气红包').findOne(timeout);
-  // 如果找到了且 id 必须为 tv_redpackets_type 才算拼手气红包
-  if (hb && !hb.id().includes('tv_redpackets_type')) {
+  // 如果找到了且 id 必须为 tv_redpackets_type 或 theme_redpackets_type 才算拼手气红包
+  if (hb && !hb.id().includes('tv_redpackets_type') && !hb.id().includes('theme_redpackets_type')) {
     hb = null
   }
   // 返回
@@ -908,15 +909,37 @@ function dd_find_timed_hb (timeout) {
 
 // 找到红包弹层打开红包按钮
 function dd_find_hb_pop_btn (timeout) {
-  return id("iv_pick_bottom").findOne(timeout);
+  // 先查找 iv_pick
+  var hb_btn = id("iv_pick").findOne(timeout);
+  // 如果没找到，再查找 theme_redpacket_pick
+  if (!hb_btn) {
+    hb_btn = id("theme_redpacket_pick").findOne(timeout);
+  }
+  return hb_btn;
 }
 
 // 找到红包弹层文案内容
 function dd_find_hb_pop_text (timeout) {
-  return id("tv_bless_word").findOne(timeout);
+  // 先查找 tv_bless_word
+  var hb_text = id("tv_bless_word").findOne(timeout);
+  // 如果没找到，再查找 theme_bless_word
+  if (!hb_text) {
+    hb_text = id("theme_bless_word").findOne(timeout);
+  }
+  // 如果没找到，再查找 theme_missed_bless_word
+  if (!hb_text) {
+    hb_text = id("theme_missed_bless_word").findOne(timeout);
+  }
+  return hb_text;
+}
+
+// 找到红包弹层根视图
+function dd_find_rl_root_view (timeout) {
+  return id("rl_root_view").findOne(timeout);
 }
 
 // 进入了红包详情页
+
 function dd_find_hb_detail (timeout) {
   // 尝试找到 id 为 redpackets_picked_detail 的元素，确保以及到了红包详情页
   return id("redpackets_picked_detail").findOne(timeout);
