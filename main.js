@@ -181,12 +181,12 @@ function main() {
 
               <vertical id="guideBox1" padding="14" marginTop="14">
                 <text textSize="12sp" textColor="#81C784" lineSpacingExtra="5"
-                  text="▸ 启动服务后自行打开【钉钉/微信】，只支持抢群红包，不支持抢个人红包，进入需要抢红包的群聊天室即可。抢红包期间不要打开日志面板，以免挡住脚本识别。"/>
+                  text="▸ 启动服务后自行打开【钉钉/微信】，只支持抢群红包，进入需要抢红包的群聊天室即可。抢红包期间不要打开日志面板，以免挡住脚本识别。"/>
               </vertical>
 
               <vertical id="guideBox2" padding="14" marginTop="10">
                 <text textSize="12sp" textColor="#FFB74D" lineSpacingExtra="5"
-                  text="▸ 专属红包、1v1红包不会抢（没必要，反正是你的）。"/>
+                  text="▸ 专属红包、个人红包不抢（没必要，反正是你的）。"/>
               </vertical>
 
               <vertical id="guideBox3" padding="14" marginTop="10">
