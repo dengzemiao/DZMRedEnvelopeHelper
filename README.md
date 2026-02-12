@@ -60,7 +60,7 @@
 
 ## 📸 效果展示
 
-**演示视频：** [查看钉钉测试视频](./hb_dd.mp4)
+**演示视频：** [查看钉钉测试视频](https://github.com/dengzemiao/DZMRedEnvelopeHelper/blob/1.0.0/hb_dd.mp4)
 
 **界面预览：**
 
