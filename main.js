@@ -821,7 +821,7 @@ let KeepAliveService = {
 // 开始钉钉抢红包
 function dd_start() {
   // 查找普通红包
-  var hb = dd_find_hb(1);
+  var hb = dd_find_hb(1, true);
   // 没有红包
   if (!hb) {
     // 查找定时红包
@@ -951,13 +951,33 @@ function dd_find_hb_expire (timeout, result) {
 }
 
 // 找到拼手气红包
-function dd_find_hb(timeout) {
-  // 查找
-  var hb = text('拼手气红包').findOne(timeout);
-  // 如果找到了且 id 必须为 tv_redpackets_type 或 theme_redpackets_type 才算拼手气红包
-  if (hb && !hb.id().includes('tv_redpackets_type') && !hb.id().includes('theme_redpackets_type')) {
-    hb = null
+// @param {number} timeout - 超时时间
+// @param {boolean} findLast - 是否查找最后一个红包，默认 false 查找第一个
+function dd_find_hb(timeout, findLast) {
+  // 拼手气红包
+  var hb = null;
+  // 查找最后一个红包
+  if (findLast) {
+    // 查找所有拼手气红包
+    var hbs = text('拼手气红包').find();
+    // 从后往前查找符合条件的红包
+    for (var i = hbs.length - 1; i >= 0; i--) {
+      var item = hbs[i];
+      // 如果 id 包含 tv_redpackets_type 或 theme_redpackets_type 才算拼手气红包
+      if (item && (item.id().includes('tv_redpackets_type') || item.id().includes('theme_redpackets_type'))) {
+        hb = item;
+        break;
+      }
+    }
+  } else {
+    // 查找第一个拼手气红包
+    hb = text('拼手气红包').findOne(timeout);
+    // 如果找到了且 id 必须为 tv_redpackets_type 或 theme_redpackets_type 才算拼手气红包
+    if (hb && !hb.id().includes('tv_redpackets_type') && !hb.id().includes('theme_redpackets_type')) {
+      hb = null
+    }
   }
+  
   // 返回
   return hb
 }
