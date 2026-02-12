@@ -1,0 +1,32 @@
+{
+  "assets": [],
+  "encryptLevel": 0,
+  "features": {
+    "activityIntentTasks": false,
+    "nodejs": "auto"
+  },
+  "launchConfig": {
+    "displaySplash": true,
+    "hideLogs": false,
+    "splashText": "Powered by Auto.js Pro",
+    "stableMode": false
+  },
+  "main": "main.js",
+  "name": "红包助手",
+  "optimization": {
+    "obfuscateComponents": false,
+    "removeAccessibilityService": false,
+    "removeOpenCv": false,
+    "unusedResources": false
+  },
+  "packageName": "com.dzm.hbhelper",
+  "permissionConfig": {
+    "requestListOnStartup": [
+      "android.permission.WRITE_EXTERNAL_STORAGE"
+    ]
+  },
+  "scripts": {},
+  "useFeatures": [],
+  "versionCode": 201,
+  "versionName": "2.0.1"
+}
