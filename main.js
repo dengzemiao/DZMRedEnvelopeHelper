@@ -30,8 +30,8 @@ var backInterval = parseInt(storage.get('backInterval') || 500);
 var isRun = false;
 // 运行子线程
 var thread = null;
-// 辅助平台
-var platform = parseInt(storage.get('platform') || 0);
+// 辅助平台（已移除微信支持，仅支持钉钉）
+// var platform = parseInt(storage.get('platform') || 0);
 
 // ========================================= 《 公共 》
 
@@ -142,19 +142,12 @@ function main() {
                 <text text="◆" textSize="14sp" id="dot2" />
                 <text text="  辅助平台" textSize="17sp" textColor="#EAEAEA" textStyle="bold" />
               </horizontal>
-              <text text="切换后需重新启动服务方可生效" textSize="11sp" textColor="#556677" marginTop="4" marginLeft="20" />
+              <text text="当前仅支持钉钉平台，微信平台防自动化后续再更新" textSize="11sp" textColor="#556677" marginTop="4" marginLeft="20" />
               <horizontal marginTop="14" gravity="center">
-                <vertical id="radio1Wrap" h="44" w="0" layout_weight="1" gravity="center" margin="0 0 6 0" paddingLeft="8">
-                  <radio id="radio1" text="  钉  钉" textSize="15sp" textColor="#EAEAEA" />
-                </vertical>
-                <vertical id="radio2Wrap" h="44" w="0" layout_weight="1" gravity="center" margin="6 0 0 0" paddingLeft="8">
-                  <radio id="radio2" text="  微  信" textSize="15sp" textColor="#EAEAEA" />
+                <vertical id="radio1Wrap" h="44" w="*" gravity="center" paddingLeft="8">
+                  <radio id="radio1" text="  钉  钉" textSize="15sp" textColor="#EAEAEA" checked="true" />
                 </vertical>
               </horizontal>
-              <radiogroup id="radiogroup" visibility="gone">
-                <radio id="radio1_hidden" />
-                <radio id="radio2_hidden" />
-              </radiogroup>
             </vertical>
 
             {/* ========== 参数设置 ========== */}
@@ -181,7 +174,7 @@ function main() {
 
               <vertical id="guideBox1" padding="14" marginTop="14">
                 <text textSize="12sp" textColor="#81C784" lineSpacingExtra="5"
-                  text="▸ 启动服务后自行打开【钉钉/微信】，只支持抢群红包，进入需要抢红包的群聊天室即可。抢红包期间不要打开日志面板，以免挡住脚本识别。"/>
+                  text="▸ 启动服务后自行打开【钉钉】，只支持抢群红包，进入需要抢红包的群聊天室即可。抢红包期间不要打开日志面板，以免挡住脚本识别。"/>
               </vertical>
 
               <vertical id="guideBox2" padding="14" marginTop="10">
@@ -202,10 +195,6 @@ function main() {
               <vertical id="guideBox5" padding="12 14" marginTop="10">
                 <text textSize="12sp" textColor="#8899AA" lineSpacingExtra="5"
                   text="钉钉 → 抢群聊拼手气红包 / 定时拼手气红包，会抢自己发出的红包。"/>
-              </vertical>
-              <vertical id="guideBox6" padding="12 14" marginTop="10">
-                <text textSize="12sp" textColor="#8899AA" lineSpacingExtra="5"
-                  text="微信 → 抢群聊普通红包 / 拼手气红包，不会抢自己发出的红包。"/>
               </vertical>
             </vertical>
 
@@ -324,8 +313,7 @@ function main() {
   ui.console.setBackground(createRoundStroke("#00000000", "#B0936A", 25, 1));
 
   // 平台选择框
-  ui.radio1Wrap.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 10, 1));
-  ui.radio2Wrap.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 10, 1));
+  ui.radio1Wrap.setBackground(createRoundStroke("#1B2A4A", C_GOLD, 10, 1.5));
 
   // 输入框样式
   ui.timeoutInterval.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 10, 1));
@@ -337,7 +325,6 @@ function main() {
   ui.guideBox3.setBackground(createRoundStroke("#2D0A0A", "#D32F2F", 10, 1));
   ui.guideBox4.setBackground(createRoundStroke("#0A1929", "#1976D2", 10, 1));
   ui.guideBox5.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 8, 1));
-  ui.guideBox6.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 8, 1));
 
   // 权限项样式
   ui.hint1.setBackground(createRoundRect(C_CARD_LIGHT, 10));
@@ -349,37 +336,8 @@ function main() {
   ui.linkBox2.setBackground(createRoundRect(C_CARD_LIGHT, 10));
   ui.disclaimerBox.setBackground(createRoundStroke("#2D1B00", "#E65100", 10, 1));
 
-  // ==================== 平台选择联动（替代 radiogroup） ====================
-  // 因为自定义样式下原生 radiogroup 不好用，手动实现单选联动
-  var radio1Selected = false;
-  var radio2Selected = false;
-
-  function updateRadioStyle() {
-    if (radio1Selected) {
-      ui.radio1Wrap.setBackground(createRoundStroke("#1B2A4A", C_GOLD, 10, 1.5));
-      ui.radio2Wrap.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 10, 1));
-    } else {
-      ui.radio1Wrap.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 10, 1));
-      ui.radio2Wrap.setBackground(createRoundStroke("#1B2A4A", C_GOLD, 10, 1.5));
-    }
-  }
-
-  ui.radio1.on("check", function(checked) {
-    if (checked) {
-      radio1Selected = true;
-      radio2Selected = false;
-      ui.radio2.setChecked(false);
-      updateRadioStyle();
-    }
-  });
-  ui.radio2.on("check", function(checked) {
-    if (checked) {
-      radio2Selected = true;
-      radio1Selected = false;
-      ui.radio1.setChecked(false);
-      updateRadioStyle();
-    }
-  });
+  // ==================== 平台选择（仅钉钉） ====================
+  // 移除了微信支持，仅保留钉钉
 
   // ==================== 数据初始化 ====================
 
@@ -388,15 +346,8 @@ function main() {
   // 设置查找红包详情页返回按钮超时时间
   ui.backInterval.setText(backInterval + '');
 
-  // 设置初始辅助平台（通过隐藏 radiogroup 保持原有 platform 逻辑）
-  if (!platform) { platform = ui.radio1_hidden.id; }
-  ui.radiogroup.check(platform);
-  // 同步到可见的 radio
-  if (platform == ui.radio1_hidden.id) {
-    ui.radio1.setChecked(true);
-  } else {
-    ui.radio2.setChecked(true);
-  }
+  // 设置初始辅助平台（仅支持钉钉）
+  ui.radio1.setChecked(true);
 
   // 点击无障碍服务
   ui.hint1.on("click", function() {
@@ -455,15 +406,7 @@ function main() {
       // 获取查找红包详情页返回按钮超时时间并存储
       backInterval = parseInt(ui.backInterval.getText() || 0);
       storage.put('backInterval', backInterval + '');
-      // 获取辅助平台并存储（使用隐藏的 radiogroup 来保存）
-      if (ui.radio1.isChecked()) {
-        ui.radiogroup.check(ui.radio1_hidden.id);
-      } else {
-        ui.radiogroup.check(ui.radio2_hidden.id);
-      }
-      platform = ui.radiogroup.getCheckedRadioButtonId();
-      storage.put('platform', platform + '');
-      // 启动服务
+      // 启动服务（仅支持钉钉）
       run();
     }
   });
@@ -634,17 +577,8 @@ function run() {
         });
         // 提示用户
         toast("服务已启动");
-        // 根据平台类型执行辅助
-        if (platform == ui.radio1_hidden.id) {
-          // 开始钉钉抢红包
-          dd_start();
-        } else if (platform == ui.radio2_hidden.id) {
-          // 开始微信抢红包
-          wx_start();
-        } else {
-          // 都不支持，则停止服务
-          stop();
-        }
+        // 开始钉钉抢红包（仅支持钉钉）
+        dd_start();
       } catch (error) {
         // 错误信息
         var message = (error && error.message) || '未知错误';
@@ -1038,137 +972,7 @@ function dd_find_hb_detail_back (timeout) {
 
 // ========================================= 《 微信红包 》
 
-// 开始微信抢红包
-function wx_start() {
-  // 页面上别人发的且没有被领取的红包
-  var hb = wx_find_hb();
-  // 输出日志
-  // if (isLog) { console.info('>> 红包: ' + (!!hb ? '有' : '无')); }
-  // 如果有红包
-  if (hb) {
-    // 点击拼手气红包
-    click(hb.bounds().centerX(), hb.bounds().centerY());
-    // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(timeoutInterval, (hb_btn) => {
-      // 找到按钮才需要继续
-      if (!!hb_btn) {
-        // 查找并点击返回按钮
-        wx_click_hb_detail_back(backInterval);
-      }
-    });
-    // 重新开始
-    wx_start();
-  } else {
-    // 查找并点击红包弹层打开红包
-    wx_click_hb_pop_btn(1, (hb_btn) => {
-      // 没找到才需要继续
-      if (!hb_btn) {
-        // 查找并点击返回按钮
-        wx_click_hb_detail_back(1, (detail_btn) => {
-          // 没找到才需要继续
-          if (!detail_btn) {
-            // 查找并点击红包弹层关闭按钮
-            wx_click_hb_pop_close_btn(1);
-          }
-        });
-      }
-    });
-    // 重新开始
-    wx_start();
-  }
-}
-
-// 页面上别人发的红包列表
-function wx_find_hbs () {
-  return id("b4t").find();
-}
-
-// 页面上别人发的且没有被领取的红包
-function wx_find_hb () {
-  // 获取页面上别人发的红包
-  var hb = null
-  // 获取页面上别人发的红包列表
-  var hbs = wx_find_hbs();
-  // 便利红包是否被领取
-  hbs.some((item, index) => {
-    // 是否被领取
-    var a3ms = item.find(id('a3m'))
-    // 状态
-    var isReceive = !!a3ms.length
-    // 没有被领取
-    if (!isReceive) {
-      // 记录
-      hb = item
-    }
-    // 停止便利
-    return !isReceive
-  })
-  // 返回
-  return hb
-}
-
-// 点击红包弹层关闭按钮
-function wx_click_hb_pop_close_btn (timeout, result) {
-  // 找到红包弹层点击按钮
-  var hb_pop_close_btn = wx_find_hb_pop_close_btn(timeout);
-  // 如果找到了
-  if (hb_pop_close_btn) {
-    // 点击
-    click(hb_pop_close_btn.bounds().centerX(), hb_pop_close_btn.bounds().centerY());
-  }
-  // 回调
-  if (result) { result(hb_pop_close_btn) }
-}
-
-// 点击红包弹层打开红包
-function wx_click_hb_pop_btn (timeout, result) {
-  // 找到红包弹层点击按钮
-  var hb_btn = wx_find_hb_pop_btn(timeout);
-  // 如果找到了
-  if (hb_btn) {
-    // 点击
-    click(hb_btn.bounds().centerX(), hb_btn.bounds().centerY());
-  }
-  // 回调
-  if (result) { result(hb_btn) }
-}
-
-// 点击红包详情页返回按钮
-function wx_click_hb_detail_back (timeout, result) {
-  // 进入了红包详情页
-  var hb_detail = wx_find_hb_detail(timeout);
-  // 返回按钮
-  var back = null
-  // 如果找到了
-  if (hb_detail) {
-    // 点击返回
-    back = wx_find_hb_detail_back(timeout);
-    // 点击
-    click(back.bounds().centerX(), back.bounds().centerY());
-  }
-  // 回调
-  if (result) { result(back) }
-}
-
-// 找到红包详情页返回按钮
-function wx_find_hb_detail_back (timeout) {
-  return id("nnc").findOne(timeout);
-}
-
-// 进入了红包详情页
-function wx_find_hb_detail (timeout) {
-  return id("j0k").findOne(timeout);
-}
-
-// 找到红包弹层打开红包按钮
-function wx_find_hb_pop_btn (timeout) {
-  return id("j6g").findOne(timeout);
-}
-
-// 找到红包弹层关闭按钮
-function wx_find_hb_pop_close_btn (timeout) {
-  return id("j6f").findOne(timeout);
-}
+// 已移除微信支持，仅保留钉钉功能
 
 // ========================================= 《 启动 》
 
@@ -1178,8 +982,6 @@ main();
 // threads.start(function () {
 //   // 钉钉抢红包
 //   dd_start();
-//   // 微信抢红包
-//   // wx_start();
 // })
 
 
