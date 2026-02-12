@@ -143,7 +143,7 @@ function main() {
                 <text text="◆" textSize="14sp" id="dot2" />
                 <text text="  辅助平台" textSize="17sp" textColor="#EAEAEA" textStyle="bold" />
               </horizontal>
-              <text text="当前仅支持钉钉平台，微信平台防自动化后续再更新" textSize="11sp" textColor="#556677" marginTop="4" marginLeft="20" />
+              <text text="当前仅支持钉钉平台，微信平台后续再更新" textSize="11sp" textColor="#556677" marginTop="4" marginLeft="20" />
               <horizontal marginTop="14" gravity="center">
                 <vertical id="radio1Wrap" h="44" w="*" gravity="center" paddingLeft="8">
                   <radio id="radio1" text="  钉  钉" textSize="15sp" textColor="#EAEAEA" checked="true" />
@@ -173,7 +173,22 @@ function main() {
                 <text text="  使用指南" textSize="17sp" textColor="#EAEAEA" textStyle="bold" />
               </horizontal>
 
-              <vertical id="guideBox1" padding="14" marginTop="14">
+              <vertical id="guideBox0" padding="14" marginTop="14">
+                <text textSize="12sp" textColor="#FF8A80" lineSpacingExtra="5" textStyle="bold"
+                  text="⚠️ 钉钉版本要求：仅支持 v6.3.10 版本"/>
+                <text textSize="11sp" textColor="#FF8A80" lineSpacingExtra="4" marginTop="6"
+                  text="CPU 32位警告可忽略，系统会自动兼容，可正常安装和抢红包。"/>
+                <horizontal gravity="center_vertical" marginTop="8">
+                  <text text="🔗" textSize="14sp" />
+                  <vertical marginLeft="8">
+                    <text textSize="11sp" textColor="#8899AA" text="钉钉 v6.3.10 版本下载"/>
+                    <text id="dingdingLink" textSize="11sp" textColor="#64B5F6" marginTop="2" 
+                      text="www.wandoujia.com/apps/6565746/history_v966"/>
+                  </vertical>
+                </horizontal>
+              </vertical>
+
+              <vertical id="guideBox1" padding="14" marginTop="10">
                 <text textSize="12sp" textColor="#81C784" lineSpacingExtra="5"
                   text="▸ 启动服务后自行打开【钉钉】，只支持抢群红包，进入需要抢红包的群聊天室即可。抢红包期间不要打开日志面板，以免挡住脚本识别。"/>
               </vertical>
@@ -321,6 +336,7 @@ function main() {
   ui.backInterval.setBackground(createRoundStroke(C_INPUT_BG, C_DIVIDER, 10, 1));
 
   // 使用指南内部小卡片
+  ui.guideBox0.setBackground(createRoundStroke("#2D0A0A", "#D32F2F", 10, 1.5));
   ui.guideBox1.setBackground(createRoundStroke("#0D2818", "#1B5E20", 10, 1));
   ui.guideBox2.setBackground(createRoundStroke("#2D1B00", "#E65100", 10, 1));
   ui.guideBox3.setBackground(createRoundStroke("#2D0A0A", "#D32F2F", 10, 1));
@@ -361,6 +377,10 @@ function main() {
   // 点击电池优化
   ui.hint3.on("click", function() {
     batteryOptimizationPage();
+  });
+  // 点击钉钉版本链接
+  ui.guideBox0.on("click", function() {
+    app.openUrl("https://www.wandoujia.com/apps/6565746/history_v966");
   });
   // 点击 GitHub 链接
   ui.linkBox1.on("click", function() {
