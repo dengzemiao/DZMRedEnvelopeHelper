@@ -22,17 +22,11 @@
 
 ## 📦 使用方式
 
-### 方式一：直接安装 APK
-下载项目提供的 APK 安装包，直接安装使用。
+前往 [GitHub Releases](https://github.com/dengzemiao/DZMRedEnvelopeHelper/releases) 下载最新版本的 APK 安装包，直接安装使用。
 
 **系统要求：**
 - Android 7.0 及以上版本
 - 支持 CPU 架构：`armeabi-v7a` 或 `arm64-v8a`
-
-### 方式二：导入源码运行
-1. 安装 `AutoJS Pro 9.x` 或更高版本
-2. 导入 `main.js` 文件
-3. 运行脚本即可使用
 
 ## 💻 使用模拟器
 
